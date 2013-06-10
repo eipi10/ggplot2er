@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ggplot2</title>
+  <meta charset="utf-8">
+  <meta name="description" content="ggplot2">
+  <meta name="author" content="Tim Churches">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+    <link rel="stylesheet" href = "assets/css/ribbons.css">
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+    <slide class="nobackground">
+      <article class="flexbox vcenter">
+        <span>
+          <img width='400px' src="assets/img/saxinstitute_logo.png">
+        </span>
+      </article>
+    </slide>
+    <!-- END LOGO SLIDE -->
+    
+
+    <!-- TITLE SLIDE -->
+    <!-- Should I move this to a Local Layout File? -->
+    <slide class="title-slide segue nobackground">
+      <aside class="gdbar">
+        <img src="assets/img/Rlogo.png">
+      </aside>
+      <hgroup class="auto-fadein">
+        <h1>ggplot2</h1>
+        <h2>grammar for graphics</h2>
+        <p>Tim Churches<br/>The Sax Institute, Sydney, Australia</p>
+      </hgroup>
+      
+      <footer class = 'license'>
+        <a href='http://creativecommons.org/licenses/by-nc-sa/3.0/'>
+        <img width = '80px' src = 'http://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png'>
+        </a>
+      </footer>
+    </slide>
+
+    <!-- SLIDES -->
+      <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>source</h2>
+  </hgroup>
+  <article>
+    <p>The majority of the material in this presentation is taken from the book:</p>
+
+<ul>
+<li>Hadley Wickham. <em>ggplot2: Elegant Graphics for Data Analysis</em> Springer:2009</li>
+<li>DOI 10.1007/978-0-387-98141-3</li>
+<li><img src="assets/img/hadley_wickham.jpg" alt="Hadley Wickham"></li>
+<li>ggplot2 documentation: <a href="http://docs.ggplot2.org/current/">http://docs.ggplot2.org/current/</a></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>grammar of graphics</h2>
+  </hgroup>
+  <article>
+    <p>Wilkinson (2005) created a grammar of graphics to describe the deep features that underlie all statistical graphics as &quot;parts of speech&quot;: </p>
+
+<ul class = "build">
+<li>The <code>data</code> that you want to visualise</li>
+<li>An aesthetic mapping, <code>aes</code> for short, describing how variables in the data are mapped to aesthetic attributes that you can perceive</li>
+<li>geometric objects, <code>geoms</code> for short, representing what you actually see on the plot: points, lines, polygons, etc</li>
+<li>optional statistical transformations, <code>stats</code> for short, summarising data in many useful ways, e.g.
+
+<ul>
+<li>binning and counting observations to create a histogram</li>
+<li>summarising the relationship between two variables with a linear model</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>grammar of graphics, cont&#39;d</h2>
+  </hgroup>
+  <article>
+    <ul class = "build">
+<li>a coordinate system, <code>coord</code> for short, describing how data coordinates are mapped to the plane of the graphic
+
+<ul>
+<li>also provides axes and gridlines to make it possible to read the graph</li>
+<li>a Cartesian coordinate system, but a number of others are available, including polar coordinates and cartographic map projections</li>
+</ul></li>
+<li><code>scales</code> which map values in the data space to values in one or more aesthetic spaces
+
+<ul>
+<li>indicate position in Cartesian or other 2-dimensional projections</li>
+<li>encode values as colour, size or shape of symbols, lines</li>
+<li><code>scales</code> draw labelled axes and/or a legend</li>
+<li>provide a reverse mapping to make it possible to read the original data values from the graph</li>
+</ul></li>
+<li>a <code>facet</code> specification describing how to break up the data into subsets and how to display those subsets as and arrangement of small multiples
+
+<ul>
+<li>known as conditioning or latticing/trellising (&quot;panelling&quot; in the Lattice package) </li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>anatomy of a plot</h2>
+  </hgroup>
+  <article>
+    <p><img src="assets/img/ggplot2-anatomy-all-annotated.png" alt="plot anatomy"></p>
+
+<p>Graphic by Software and Programmer Efficiency (Sape) Research Group at the Faculty of Informatics of the University of Lugano</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>grammar not pronounciation</h2>
+  </hgroup>
+  <article>
+    <ul class = "build">
+<li><p>the Wilkinson grammar of graphics does not include finer points of display</p>
+
+<ul>
+<li>font size or background colour are not specified by the grammar</li>
+<li>such attributes are analogous to pronounciation (or maybe typography?)</li>
+</ul></li>
+<li><p>ggplot2 specifies such attributes with a <code>theming</code> system</p>
+
+<ul>
+<li>the default theme is very attractive, and thoughtfully designed</li>
+<li>alternative themes come with the package</li>
+<li>easy to tweak themes or design your own</li>
+</ul></li>
+<li><p>ggplot2 maintains a clean separation between:</p>
+
+<ul class = "build">
+<li>the <code>data</code> to be visualised</li>
+<li>the form of that visualisation (defined by the <code>grammar</code>)</li>
+<li>how the rendered graphic looks (defined by the <code>theme</code>)</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h2>what ggplot2 doesn&#39;t do</h2>
+  </hgroup>
+  <article>
+    <ul class = "build">
+<li>graphs are static, not interactive (e.g. brushing, zooming), but...
+
+<ul>
+<li>Hadley Wickham is rewriting ggplot2 in JavaScript, using the d3 library -&gt; interactive graphs</li>
+<li>the incremental, object-oriented nature of ggplot2 graphs make them ideal targets for interactive graph specification via Shiny or similar</li>
+</ul></li>
+<li>3D graphics (cf lattice package for R)<br></li>
+<li>exhaustive comparison of lattice vs ggplot2 capabilities and results in 12 parts at:
+
+<ul>
+<li><a href="http://learnr.wordpress.com/2009/06/28/ggplot2-version-of-figures-in-lattice-multivariate-data-visualization-with-r-part-1/">http://learnr.wordpress.com/2009/06/28/ggplot2-version-of-figures-in-lattice-multivariate-data-visualization-with-r-part-1/</a></li>
+<li>...through to...</li>
+<li><a href="http://learnr.wordpress.com/2009/08/18/ggplot2-version-of-figures-in-lattice-multivariate-data-visualization-with-r-part-13/">http://learnr.wordpress.com/2009/08/18/ggplot2-version-of-figures-in-lattice-multivariate-data-visualization-with-r-part-13/</a></li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-7" style="background:;">
+  <hgroup>
+    <h2>ggplot2 versus other R graphics systems</h2>
+  </hgroup>
+  <article>
+    <ul class = "build">
+<li><p>base graphics in R</p>
+
+<ul>
+<li>written by Ross Ihaka, University of Aukland, based on S graphics driver</li>
+<li>use a pen-on-paper model: you can only draw on top of the plot, you cannot modify or delete existing content</li>
+<li>no (user accessible) representation of the graphics, apart from their appearance on the screen</li>
+<li>includes both tools for drawing primitives and entire plots.</li>
+</ul></li>
+<li><p>grid graphics, a much richer system of graphical primitives, written in 2000 by Paul Murrell, also at University of Auckland</p>
+
+<ul>
+<li>grid <code>grobs</code> (graphical objects) can be represented independently of the plot and modified later</li>
+<li>viewports (each containing its own coordinate system) makes it easier to lay out complex graphics</li>
+<li>provides drawing primitives, but no tools for producing statistical graphics</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>ggplot2 versus other R graphics systems, cont&#39;d</h2>
+  </hgroup>
+  <article>
+    <ul class = "build">
+<li><p>lattice package, developed by Deepayan Sarkar, uses grid graphics to implement the trellis graphics system of Bill Cleveland (1985)</p>
+
+<ul>
+<li>easily produce conditioned plots</li>
+<li>some plotting details (e.g., legends) taken care of automatically</li>
+<li>but lacks a formal model, which can make it hard to extend (custom panel functions can be tricky to write)</li>
+</ul></li>
+<li><p>ggplot (precursor to ggplot2), also developed at University of Auckland!</p>
+
+<ul>
+<li>also uses grid graphics for underpinnings</li>
+<li>formal grammar</li>
+<li>far more modular and object-oriented</li>
+<li>strong separation of data, grammar and themes</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-9" style="background:;">
+  <hgroup>
+    <h2>installing ggplot2</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">install.packages(&quot;ggplot2&quot;)
+</code></pre>
+
+<p>Optionally, some extra goodies</p>
+
+<pre><code class="r">install.packages(&quot;gridExtra&quot;)
+install.packages(&quot;reshape2&quot;)
+</code></pre>
+
+<p>Don&#39;t forget to load the library</p>
+
+<pre><code class="r">library(ggplot2)
+library(gridExtra)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-10" style="background:;">
+  <hgroup>
+    <h2>qplot()</h2>
+  </hgroup>
+  <article>
+    <ul class = "build">
+<li>mimics the <code>plot()</code> function in base graphics</li>
+<li>don&#39;t use it
+
+<ul>
+<li>you miss out on all the good stuff in ggplot2</li>
+<li>is fairly limited, so you&#39;ll end up learning the real ggplot2 functions anyway</li>
+</ul></li>
+<li>by default creates a basic scatter plot
+
+<ul>
+<li>arguments: x variable, y variable, a data frame</li>
+</ul></li>
+<li>all data used by ggplot2 needs to be in a data frame (cf base and lattice graphics)
+
+<ul>
+<li>but can use more than one data frame</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-11" style="background:;">
+  <hgroup>
+    <h2>qplot()</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">qplot(carat, price, data = diamonds)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-5.png" alt="plot of chunk unnamed-chunk-5"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-12" style="background:;">
+  <hgroup>
+    <h2>functions can be used on variables</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>true throughout ggplot2</li>
+</ul>
+
+<pre><code class="r">qplot(log(carat), log(price), data = diamonds)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-6.png" alt="plot of chunk unnamed-chunk-6"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-13" style="background:;">
+  <hgroup>
+    <h2>additional arguments to modify qplot() output</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">qplot(carat, price, data = diamonds, colour = color)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-7.png" alt="plot of chunk unnamed-chunk-7"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-14" style="background:;">
+  <hgroup>
+    <h2>ggplot2 graphics are objects</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p1 &lt;- qplot(carat, price, data = diamonds, colour = color)
+p2 &lt;- qplot(carat, price, data = diamonds, shape = cut)
+grid.arrange(p1, p2, ncol = 2)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-8.png" alt="plot of chunk unnamed-chunk-8"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-15" style="background:;">
+  <hgroup>
+    <h2>ggplot() - the real deal</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>takes two arguments: a data frame, and an aesthetic mapping</li>
+</ul>
+
+<pre><code class="r">p &lt;- ggplot(diamonds, aes(carat, price, colour = cut))
+p
+</code></pre>
+
+<p>Hmmm, no output!</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-16" style="background:;">
+  <hgroup>
+    <h2>need to add a geom</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p &lt;- ggplot(diamonds, aes(carat, price, colour = cut))
+p + geom_point()
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-10.png" alt="plot of chunk unnamed-chunk-10"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-17" style="background:;">
+  <hgroup>
+    <h2>plots are R objects</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">summary(p)
+</code></pre>
+
+<pre><code>## data: carat, cut, color, clarity, depth, table, price, x, y, z
+##   [53940x10]
+## mapping:  x = carat, y = price, colour = cut
+## faceting: facet_null() 
+## -----------------------------------
+## geom_point: na.rm = FALSE 
+## stat_identity:  
+## position_identity: (width = NULL, height = NULL)
+</code></pre>
+
+<ul>
+<li>each element of the ggplot2 object can be modified or replaced by ggplot2 function</li>
+<li>or by your own custom functions</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-18" style="background:;">
+  <hgroup>
+    <h2>replacing data in a plot object</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>use the <code>%+%</code>` operator to replace datasets in a graphic object</li>
+</ul>
+
+<pre><code class="r">p1 &lt;- ggplot(mtcars, aes(mpg, wt, colour = cyl)) + geom_point()
+mtcars2 &lt;- transform(mtcars, mpg = mpg^2)
+p2 &lt;- p1 %+% mtcars2
+grid.arrange(p1, p2, ncol = 2)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-13.png" alt="plot of chunk unnamed-chunk-13"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-19" style="background:;">
+  <hgroup>
+    <h2>aesthetic mappings can be added to geoms as well</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p1 &lt;- ggplot(mtcars, aes(mpg, wt)) + geom_point(aes(colour = factor(cyl)), size = 5)
+p2 &lt;- p1 + geom_smooth()
+p3 &lt;- p1 + geom_smooth(aes(group = cyl, colour = factor(cyl)), method = &quot;lm&quot;, 
+    size = 1.5)
+grid.arrange(p1, p2, p3, ncol = 3)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-14.png" alt="plot of chunk unnamed-chunk-14"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-20" style="background:;">
+  <hgroup>
+    <h2>override geom default statistical mappings</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p &lt;- ggplot(diamonds, aes(carat))
+p1 &lt;- p + geom_histogram()
+p2 &lt;- p + geom_histogram(aes(y = ..density..), binwidth = 0.1)
+grid.arrange(p1, p2, ncol = 2)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-15.png" alt="plot of chunk unnamed-chunk-15"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-21" style="background:;">
+  <hgroup>
+    <h2>mixing stats with geoms</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">d &lt;- ggplot(diamonds, aes(carat)) + xlim(0, 3)
+d1 &lt;- d + stat_bin(aes(ymax = ..count..), binwidth = 0.1, geom = &quot;area&quot;)
+d2 &lt;- d + stat_bin(aes(size = ..density..), binwidth = 0.1, geom = &quot;point&quot;)
+d3 &lt;- d + stat_bin(aes(y = 1, fill = ..count..), binwidth = 0.1, geom = &quot;tile&quot;)
+grid.arrange(d1, d2, d3, ncol = 3)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-22" style="background:;">
+  <hgroup>
+    <h2>mixing stats with geoms</h2>
+  </hgroup>
+  <article>
+    <p><img src="figure/unnamed-chunk-17.png" alt="plot of chunk unnamed-chunk-17"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-23" style="background:;">
+  <hgroup>
+    <h2>mixing stats with geoms</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">x &lt;- data.frame(x = rnorm(1000))
+p &lt;- ggplot(x, aes(x)) + geom_density()
+p + stat_function(fun = dnorm, colour = &quot;red&quot;)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-18.png" alt="plot of chunk unnamed-chunk-18"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-24" style="background:;">
+  <hgroup>
+    <h2>other geoms: boxplots</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p &lt;- ggplot(mtcars, aes(factor(cyl), mpg))
+p + geom_boxplot()
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-19.png" alt="plot of chunk unnamed-chunk-19"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-25" style="background:;">
+  <hgroup>
+    <h2>other geoms: boxplots, violin plots, jittered points</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p1 &lt;- p + geom_boxplot() + geom_jitter()
+p2 &lt;- p + geom_violin() + geom_jitter()
+p3 &lt;- p1 + geom_violin(alpha = 0.25, colour = &quot;pink&quot;)
+grid.arrange(p1, p2, p3, ncol = 3)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-20.png" alt="plot of chunk unnamed-chunk-20"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-26" style="background:;">
+  <hgroup>
+    <h2>other geoms: quantile regression (boxplot analogue for continuous variables)</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">msamp &lt;- movies[sample(nrow(movies), 1000), ]
+p &lt;- ggplot(msamp, aes(year, rating)) + geom_point()
+p + geom_quantile()
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-21.png" alt="plot of chunk unnamed-chunk-21"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-27" style="background:;">
+  <hgroup>
+    <h2>other geoms: boxplots + flipped co-ordinates</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p + geom_boxplot(outlier.colour = &quot;green&quot;, outlier.size = 5) + coord_flip()
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-22.png" alt="plot of chunk unnamed-chunk-22"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-28" style="background:;">
+  <hgroup>
+    <h2>variations on a scatter plot by substituting geoms</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">rnorm.df &lt;- data.frame(value = c(rnorm(300, mean = 0), rnorm(100, mean = 3)), 
+    other_value = c(rnorm(300, mean = 0), rnorm(100, mean = 3)), mean = c(rep(0, 
+        300), rep(3, 100)))
+p &lt;- ggplot(data = rnorm.df)
+p &lt;- p + aes(x = value, y = other_value)
+p1 &lt;- p + geom_point() + labs(title = &quot;geom_point&quot;)
+p2 &lt;- p + geom_bin2d() + labs(title = &quot;geom_bin2d&quot;)
+p3 &lt;- p + geom_point(alpha = 0.4) + geom_density2d() + labs(title = &quot;geom_point + geom_density2d&quot;)
+p4 &lt;- p + geom_hex() + labs(title = &quot;geom_hex&quot;)
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-29" style="background:;">
+  <hgroup>
+    <h2>variations on a scatter plot by substituting geoms</h2>
+  </hgroup>
+  <article>
+    <p><img src="figure/unnamed-chunk-24.png" alt="plot of chunk unnamed-chunk-24"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-30" style="background:;">
+  <hgroup>
+    <h2>fill, dodge, binhex</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p1 &lt;- ggplot(diamonds, aes(x = clarity, fill = cut)) + geom_bar()
+p2 &lt;- ggplot(diamonds, aes(x = clarity, fill = cut)) + geom_bar(position = &quot;dodge&quot;)
+p3 &lt;- ggplot(diamonds, aes(x = carat, y = price)) + geom_hex()
+grid.arrange(p1, p2, p3, ncol = 3)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-26.png" alt="plot of chunk unnamed-chunk-26"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-31" style="background:;">
+  <hgroup>
+    <h2>different coordinate systems</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">ggplot(diamonds, aes(clarity, fill = cut)) + geom_bar() + coord_polar()
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-27.png" alt="plot of chunk unnamed-chunk-27"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-32" style="background:;">
+  <hgroup>
+    <h2>alpha channel blending</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p &lt;- ggplot(data = mpg) + aes(x = cty, fill = factor(cyl))
+p + geom_density(alpha = 0.5)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-28.png" alt="plot of chunk unnamed-chunk-28"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-33" style="background:;">
+  <hgroup>
+    <h2>maps</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">crimes &lt;- data.frame(state = tolower(rownames(USArrests)), USArrests)
+require(maps)
+states_map &lt;- map_data(&quot;state&quot;)
+ggplot(crimes, aes(map_id = state)) + geom_map(aes(fill = Assault), map = states_map) + 
+    expand_limits(x = states_map$long, y = states_map$lat)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-29.png" alt="plot of chunk unnamed-chunk-29"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-34" style="background:;">
+  <hgroup>
+    <h2>maps with cartographic projections</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p &lt;- last_plot()
+p1 &lt;- p + coord_map()  # defaults to Mercator projection
+p2 &lt;- p + coord_map(&quot;conic&quot;, lat0 = 20)
+grid.arrange(p1, p2, ncol = 2)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-30.png" alt="plot of chunk unnamed-chunk-30"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-35" style="background:;">
+  <hgroup>
+    <h2>rasters</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r"># Generate data
+pp &lt;- function(n, r = 4) {
+    x &lt;- seq(-r * pi, r * pi, len = n)
+    df &lt;- expand.grid(x = x, y = x)
+    df$r &lt;- sqrt(df$x^2 + df$y^2)
+    df$z &lt;- cos(df$r^2) * exp(-df$r/6)
+    df
+}
+p1 &lt;- ggplot(data = pp(20), aes(x = x, y = y, fill = z)) + geom_raster()
+p2 &lt;- p1 %+% pp(200)
+grid.arrange(p1, p2, ncol = 2)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-36" style="background:;">
+  <hgroup>
+    <h2>rasters</h2>
+  </hgroup>
+  <article>
+    <p><img src="figure/unnamed-chunk-32.png" alt="plot of chunk unnamed-chunk-32"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-37" style="background:;">
+  <hgroup>
+    <h2>predefined geoms</h2>
+  </hgroup>
+  <article>
+    <table><thead>
+<tr>
+<th>geom</th>
+<th>description</th>
+<th>geom</th>
+<th>description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>geom_abline</td>
+<td>Line specified by a slope</td>
+<td>geom_area</td>
+<td>Area plot</td>
+</tr>
+<tr>
+<td>geom_bar</td>
+<td>Bar charts with bases on x-axis</td>
+<td>geom_bin2d</td>
+<td>Heat map of 2D binned values</td>
+</tr>
+<tr>
+<td>geom_blank</td>
+<td>Draws a blank</td>
+<td>geom_boxplot</td>
+<td>Box and whiskers plots</td>
+</tr>
+<tr>
+<td>geom_contour</td>
+<td>Display contours of a 3D surface in 2D</td>
+<td>geom_crossbar</td>
+<td>Hollow bar with middle indicated by horizontal line</td>
+</tr>
+<tr>
+<td>geom_density</td>
+<td>Display a smoothed density estimate</td>
+<td>geom_density2d</td>
+<td>Contours from a 2D density estimate</td>
+</tr>
+<tr>
+<td>geom_dotplot</td>
+<td>Dot plot, beloved of ABS</td>
+<td>geom_errorbar</td>
+<td>Error/CI bars</td>
+</tr>
+<tr>
+<td>geom_errorbarh</td>
+<td>Horizontal error bars</td>
+<td>geom_freqpoly</td>
+<td>Frequency polygon</td>
+</tr>
+<tr>
+<td>geom_hex</td>
+<td>Hexagon bining</td>
+<td>geom_histogram</td>
+<td>Histogram</td>
+</tr>
+<tr>
+<td>geom_hline</td>
+<td>Horizontal line</td>
+<td>geom_jitter</td>
+<td>Points, jittered to reduce over plotting</td>
+</tr>
+<tr>
+<td>geom_line</td>
+<td>Connect observations, ordered by x value</td>
+<td>geom_linerange</td>
+<td>An interval represented by a vertical line</td>
+</tr>
+<tr>
+<td>geom_map</td>
+<td>Polygons from a reference map</td>
+<td>geom_path</td>
+<td>Connect observations in original order</td>
+</tr>
+</tbody></table>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-38" style="background:;">
+  <hgroup>
+    <h2>predefined geoms, cont&#39;d</h2>
+  </hgroup>
+  <article>
+    <table><thead>
+<tr>
+<th>geom</th>
+<th>description</th>
+<th>geom</th>
+<th>description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>geom_point</td>
+<td>Scatterplot</td>
+<td>geom_pointrange</td>
+<td>An interval represented by a vertical line, with a point in the middle</td>
+</tr>
+<tr>
+<td>geom_polygon</td>
+<td>Polygon, a filled path, can also draw maps</td>
+<td>geom_quantile</td>
+<td>Add quantile lines from a quantile regression</td>
+</tr>
+<tr>
+<td>geom_raster</td>
+<td>High-performance rectangular tiling</td>
+<td>geom_rect</td>
+<td>Draw arbitrary 2D rectangles</td>
+</tr>
+<tr>
+<td>geom_ribbon</td>
+<td>Ribbons, y range with continuous x values</td>
+<td>geom_rug</td>
+<td>Marginal rug plots</td>
+</tr>
+<tr>
+<td>geom_segment</td>
+<td>Single line segments</td>
+<td>geom_smooth</td>
+<td>Add a smoothed conditional mean</td>
+</tr>
+<tr>
+<td>geom_step</td>
+<td>Connect observations by stairs (KM plots)</td>
+<td>geom_text</td>
+<td>Textual annotations</td>
+</tr>
+<tr>
+<td>geom_tile</td>
+<td>Tile plane with rectangles</td>
+<td>geom_violin</td>
+<td>Violin plot</td>
+</tr>
+<tr>
+<td>geom_vline</td>
+<td>Vertical line</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-39" style="background:;">
+  <hgroup>
+    <h2>facets</h2>
+  </hgroup>
+  <article>
+    <ul class = "build">
+<li><p>facet_grid()</p>
+
+<ul>
+<li>produces a 2D grid of panels defined by variables which form the rows and columns</li>
+<li>layout like coplot in base graphics</li>
+</ul></li>
+<li><p>facet_wrap()</p>
+
+<ul>
+<li>produces a 1D ribbon of panels that is wrapped into 2D</li>
+<li>layout like lattice graphics</li>
+</ul></li>
+<li><p>facetting uses a formula interface, like lattice</p></li>
+<li><p>options for changing facet order and labelling</p></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-40" style="background:;">
+  <hgroup>
+    <h2>no facets</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">mpg2 &lt;- subset(mpg, cyl != 5 &amp; drv %in% c(&quot;4&quot;, &quot;f&quot;))
+ggplot(data = mpg2, aes(cty, hwy)) + geom_point()
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-33.png" alt="plot of chunk unnamed-chunk-33"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-41" style="background:;">
+  <hgroup>
+    <h2>facets</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">ggplot(data = mpg2, aes(cty, hwy)) + geom_point() + facet_grid(. ~ cyl)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-34.png" alt="plot of chunk unnamed-chunk-34"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-42" style="background:;">
+  <hgroup>
+    <h2>facets</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">ggplot(data = mpg2, aes(cty)) + geom_histogram(binwidth = 2) + facet_grid(cyl ~ 
+    .)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-35.png" alt="plot of chunk unnamed-chunk-35"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-43" style="background:;">
+  <hgroup>
+    <h2>facets</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">ggplot(data = mpg2, aes(cty, hwy)) + geom_point() + facet_grid(drv ~ cyl)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-36.png" alt="plot of chunk unnamed-chunk-36"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-44" style="background:;">
+  <hgroup>
+    <h2>facets: label with varaiable name and value</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">ggplot(data = mpg2, aes(cty, hwy)) + geom_point() + facet_grid(drv ~ cyl, labeller = label_both)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-37.png" alt="plot of chunk unnamed-chunk-37"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-45" style="background:;">
+  <hgroup>
+    <h2>nested facets</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">ggplot(data = mpg2, aes(cty, hwy)) + geom_point() + facet_grid(. ~ cyl + drv, 
+    labeller = label_both)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-38.png" alt="plot of chunk unnamed-chunk-38"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-46" style="background:;">
+  <hgroup>
+    <h2>custom labellers</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">cyl_drv_custom_labeller &lt;- function(variable, value) {
+    if (variable == &quot;cyl&quot;) {
+        return(paste(value, &quot;cylinders&quot;))
+    } else if (variable == &quot;drv&quot;) {
+        drv.types &lt;- list(`4` = &quot;4WD&quot;, f = &quot;Front-wheel drive&quot;)
+        return(drv.types[value])
+    }
+}
+ggplot(data = mpg2, aes(cty, hwy)) + geom_point() + facet_grid(. ~ cyl + drv, 
+    labeller = cyl_drv_custom_labeller)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-47" style="background:;">
+  <hgroup>
+    <h2>custom labellers</h2>
+  </hgroup>
+  <article>
+    <p><img src="figure/unnamed-chunk-40.png" alt="plot of chunk unnamed-chunk-40"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-48" style="background:;">
+  <hgroup>
+    <h2>facets with marginals</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p &lt;- ggplot(data = mpg2, aes(displ, hwy)) + geom_point(alpha = 0.25)
+p &lt;- p + geom_smooth(method = &quot;lm&quot;, se = F)
+p1 &lt;- p + facet_grid(cyl ~ drv)
+p2 &lt;- p + facet_grid(cyl ~ drv, margins = T)
+grid.arrange(p, p1, p2, ncol = 3)
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-49" style="background:;">
+  <hgroup>
+    <h2>facets with marginals</h2>
+  </hgroup>
+  <article>
+    <p><img src="figure/unnamed-chunk-42.png" alt="plot of chunk unnamed-chunk-42"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-50" style="background:;">
+  <hgroup>
+    <h2>facets with free scales</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p &lt;- ggplot(data = mpg, aes(cty, hwy)) + geom_point(alpha = 0.25)
+p1 &lt;- p + facet_wrap(~cyl)
+p2 &lt;- p + facet_wrap(~cyl, scales = &quot;free&quot;)
+grid.arrange(p1, p2, ncol = 2)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-43.png" alt="plot of chunk unnamed-chunk-43"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-51" style="background:;">
+  <hgroup>
+    <h2>parsed labels</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">mtcars$cyl2 &lt;- factor(mtcars$cyl, labels = c(&quot;alpha&quot;, &quot;beta&quot;, &quot;gamma&quot;))
+p1 &lt;- ggplot(data = mtcars, aes(wt, mpg)) + geom_point() + facet_grid(. ~ cyl2)
+p2 &lt;- p1 + facet_grid(. ~ cyl2, labeller = label_parsed)
+grid.arrange(p1, p2, ncol = 2)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-44.png" alt="plot of chunk unnamed-chunk-44"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-52" style="background:;">
+  <hgroup>
+    <h2>facetted maps</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">crimes.melted &lt;- melt(crimes, id = 1)
+ggplot(crimes.melted, aes(map_id = state)) + geom_map(aes(fill = value), map = states_map) + 
+    expand_limits(x = states_map$long, y = states_map$lat) + coord_map() + facet_wrap(~variable)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-46.png" alt="plot of chunk unnamed-chunk-46"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-53" style="background:;">
+  <hgroup>
+    <h2>annotations</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p &lt;- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point()
+p + annotate(&quot;text&quot;, x = 4, y = 25, label = &quot;Some text&quot;)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-47.png" alt="plot of chunk unnamed-chunk-47"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-54" style="background:;">
+  <hgroup>
+    <h2>annotations</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p + annotate(&quot;rect&quot;, xmin = 3, xmax = 4.2, ymin = 12, ymax = 21, alpha = 0.2)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-48.png" alt="plot of chunk unnamed-chunk-48"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-55" style="background:;">
+  <hgroup>
+    <h2>data-driven annotations</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p &lt;- ggplot(mtcars, aes(x = wt, y = mpg, label = rownames(mtcars))) + geom_point()
+p + geom_text(aes(colour = factor(cyl))) + scale_colour_discrete(l = 40)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-49.png" alt="plot of chunk unnamed-chunk-49"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-56" style="background:;">
+  <hgroup>
+    <h2>colour palettes</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p1 &lt;- ggplot(diamonds[sample(nrow(diamonds), 1000), ], aes(x = carat, y = price, 
+    colour = clarity)) + geom_point()
+p2 &lt;- p1 + scale_colour_brewer()
+p3 &lt;- p1 + scale_colour_grey()
+grid.arrange(p1, p2, p3, ncol = 3)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-50.png" alt="plot of chunk unnamed-chunk-50"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-57" style="background:;">
+  <hgroup>
+    <h2>themes</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p1 &lt;- ggplot(diamonds, aes(x = clarity, fill = cut)) + geom_bar()
+p2 &lt;- p1 + theme_bw()
+p3 &lt;- p2 + scale_fill_grey()
+grid.arrange(p1, p2, p3, ncol = 3)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-51.png" alt="plot of chunk unnamed-chunk-51"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-58" style="background:;">
+  <hgroup>
+    <h2>more themes</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p1 &lt;- ggplot(diamonds, aes(x = clarity, fill = cut)) + geom_bar()
+p2 &lt;- p1 + theme_classic()
+p3 &lt;- p1 + theme_minimal()
+grid.arrange(p1, p2, p3, ncol = 3)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-52.png" alt="plot of chunk unnamed-chunk-52"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-59" style="background:;">
+  <hgroup>
+    <h2>customised themes</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">p1 &lt;- ggplot(iris, aes(Sepal.Width, Sepal.Length)) + geom_point(aes(color = Species))
+p2 &lt;- p1 + theme(panel.background = element_rect(fill = &quot;green&quot;))
+p2 &lt;- p2 + theme(panel.grid.major = element_line(colour = &quot;black&quot;)) + labs(title = &quot;Yuk!&quot;)
+grid.arrange(p1, p2, ncol = 2)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-53.png" alt="plot of chunk unnamed-chunk-53"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-60" style="background:;">
+  <hgroup>
+    <h2>non-linear mixed model from MASS: lattice vs ggplot2</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li><p>example from W.N Venables and B.D. Ripley (1999). Modern Applied Statistics with S-PLUS (MASS), 3rd Ed. Springer. Section 8.8, pp273-7</p></li>
+<li><p>first estimate starting parameters</p></li>
+</ul>
+
+<pre><code class="r">require(MASS, nlme, splines, lattice)
+Fpl &lt;- deriv(~A + (B - A)/(1 + exp((log(d) - ld50)/th)), c(&quot;A&quot;, &quot;B&quot;, &quot;ld50&quot;, 
+    &quot;th&quot;), function(d, A, B, ld50, th) {
+})
+st &lt;- nls(BPchange ~ Fpl(Dose, A, B, ld50, th), start = c(A = 25, B = 0, ld50 = 4, 
+    th = 0.25), data = Rabbit)
+st.pars &lt;- st$m$getPars()
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-61" style="background:;">
+  <hgroup>
+    <h2>non-linear mixed model from MASS: lattice vs ggplot2</h2>
+  </hgroup>
+  <article>
+    <p>fit several mixed models</p>
+
+<pre><code class="r">Rc.nlme &lt;- nlme(BPchange ~ Fpl(Dose, A, B, ld50, th), fixed = list(A ~ 1, B ~ 
+    1, ld50 ~ 1, th ~ 1), random = A + ld50 ~ 1 | Animal, data = Rabbit, subset = Treatment == 
+    &quot;Control&quot;, start = list(fixed = st.pars))
+Rm.nlme &lt;- update(Rc.nlme, subset = Treatment == &quot;MDL&quot;)
+options(contrasts = c(&quot;contr.treatment&quot;, &quot;contr.poly&quot;))
+c1 &lt;- c(28, 1.6, 4.1, 0.27, 0)
+R.nlme1 &lt;- nlme(BPchange ~ Fpl(Dose, A, B, ld50, th), fixed = list(A ~ Treatment, 
+    B ~ Treatment, ld50 ~ Treatment, th ~ Treatment), random = A + ld50 ~ 1 | 
+    Animal/Run, data = Rabbit, start = list(fixed = c1[c(1, 5, 2, 5, 3, 5, 4, 
+    5)]))
+R.nlme2 &lt;- update(R.nlme1, fixed = list(A ~ 1, B ~ 1, ld50 ~ Treatment, th ~ 
+    1), start = list(fixed = c1[c(1:3, 5, 4)]))
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-62" style="background:;">
+  <hgroup>
+    <h2>non-linear mixed model from MASS - lattice</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">xyplot(BPchange ~ log(Dose) | Animal * Treatment, Rabbit, xlab = &quot;log(Dose) of Phenylbiguanide&quot;, 
+    ylab = &quot;Change in blood pressure (mm Hg)&quot;, subscripts = T, aspect = &quot;fill&quot;, 
+    main = title, panel = function(x, y, subscripts) {
+        panel.grid()
+        panel.xyplot(x, y)
+        sp &lt;- spline(x, fitted(R.nlme2)[subscripts])
+        panel.xyplot(sp$x, sp$y, type = &quot;l&quot;)
+    })
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-63" style="background:;">
+  <hgroup>
+    <h2>non-linear mixed model from MASS - ggplot2</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">Rabbit2 &lt;- cbind(Rabbit, fitted = fitted(R.nlme2))
+p &lt;- ggplot(data = Rabbit2, aes(x = log(Dose), y = BPchange))
+p &lt;- p + labs(title = title, x = &quot;log(Dose) of Phenylbiguanide&quot;, y = &quot;Change in blood pressure (mm Hg)&quot;)
+p &lt;- p + geom_point(colour = &quot;red&quot;) + facet_grid(Treatment ~ Animal, as.table = F)
+p &lt;- p + geom_smooth(aes(y = fitted), method = &quot;lm&quot;, formula = y ~ ns(x, df = 5), 
+    se = F)
+p
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-64" style="background:;">
+  <hgroup>
+    <h2>non-linear mixed model from MASS - lattice</h2>
+  </hgroup>
+  <article>
+    <p><img src="figure/unnamed-chunk-59.png" alt="plot of chunk unnamed-chunk-59"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-65" style="background:;">
+  <hgroup>
+    <h2>non-linear mixed model from MASS - ggplot2</h2>
+  </hgroup>
+  <article>
+    <p><img src="figure/unnamed-chunk-60.png" alt="plot of chunk unnamed-chunk-60"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-66" style="background:;">
+  <hgroup>
+    <h2>KM plot with base R graphics</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>uses the special <code>plot</code> method in the <code>survfit</code> class</li>
+</ul>
+
+<pre><code class="r">lungca.Surv &lt;- Surv(lung$time, lung$status)
+lungca.survfit &lt;- survfit(lungca.Surv ~ 1, data = lung)
+plot(lungca.survfit, mark.time = TRUE)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-61.png" alt="plot of chunk unnamed-chunk-61"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-67" style="background:;">
+  <hgroup>
+    <h2>KM curves with ggplot2</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>to plot Kaplan-Meier curves from <code>survfit</code> objects using ggplot2, we first need to get the data into a suitable data frame
+
+<ul>
+<li>we can write a generic function to do that</li>
+<li>fortunately, one has already been written by Ramon Saccilotto of the Basel Institute for Clinical Epidemiology and Biostatistics, Universitätsspital, Basel (see <a href="http://www.ceb-institute.org/bbs/wp-content/uploads/2011/09/handout_ggplot2.pdf">http://www.ceb-institute.org/bbs/wp-content/uploads/2011/09/handout_ggplot2.pdf</a>)</li>
+<li>full source code for this function appears in the source code for this <code>slidify</code> presentation</li>
+</ul></li>
+</ul>
+
+<pre><code class="r">createSurvivalFrame &lt;- function(f.survfit){
+  # initialise frame variable
+  f.frame &lt;- NULL
+  # check if more then one strata
+  if(length(names(f.survfit$strata)) == 0){
+    ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-68" style="background:;">
+  <hgroup>
+    <h2>KM curves with ggplot2</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">lungca.survframe &lt;- createSurvivalFrame(lungca.survfit)
+ggplot(data = lungca.survframe) + geom_step(aes(x = time, y = surv), direction = &quot;hv&quot;) + 
+    geom_step(aes(x = time, y = upper), directions = &quot;hv&quot;, linetype = 2) + geom_step(aes(x = time, 
+    y = lower), direction = &quot;hv&quot;, linetype = 2) + geom_point(data = subset(lungca.survframe, 
+    n.censor == 1), aes(x = time, y = surv), shape = 20)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-64.png" alt="plot of chunk unnamed-chunk-64"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-69" style="background:;">
+  <hgroup>
+    <h2>stratified KM plots with ggplot2</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">ggplot(data = lungca.sex.survframe, aes(colour = strata, group = strata)) + 
+    geom_step(aes(x = time, y = surv), direction = &quot;hv&quot;) + geom_step(aes(x = time, 
+    y = upper), directions = &quot;hv&quot;, linetype = 2, alpha = 0.5) + geom_step(aes(x = time, 
+    y = lower), direction = &quot;hv&quot;, linetype = 2, alpha = 0.5) + geom_point(data = subset(lungca.sex.survframe, 
+    n.censor == 1), aes(x = time, y = surv), shape = 20) + theme_bw()
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-66.png" alt="plot of chunk unnamed-chunk-66"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-70" style="background:;">
+  <hgroup>
+    <h2>stratified KM plots with ggplot2</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">ggplot(data = lungca.sex.survframe, aes(colour = strata, group = strata)) + 
+    geom_step(aes(x = time, y = surv), direction = &quot;hv&quot;) + geom_ribbon(aes(x = time, 
+    ymax = upper, ymin = lower, fill = strata), directions = &quot;hv&quot;, linetype = 0, 
+    alpha = 0.25) + geom_point(data = subset(lungca.sex.survframe, n.censor == 
+    1), aes(x = time, y = surv), shape = 20) + theme_bw()
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-67.png" alt="plot of chunk unnamed-chunk-67"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-71" style="background:;">
+  <hgroup>
+    <h2>a custom function for KM plots with ggplot2</h2>
+  </hgroup>
+  <article>
+    <ul>
+<li>wrap up the ggplot construction into a function
+
+<ul>
+<li>full code in the <code>slidify</code> source code for this presentation</li>
+</ul></li>
+</ul>
+
+<pre><code class="r">qplot_survival &lt;- function(f.frame, f.CI=&quot;default&quot;, f.shape=3){
+  # use different plotting commands dependig whether or not strata&#39;s are given
+  if(&quot;strata&quot; %in% names(f.frame) == FALSE){
+    # confidence intervals are drawn if not specified otherwise
+    if(f.CI==&quot;default&quot; | f.CI==TRUE ){
+    ...
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-72" style="background:;">
+  <hgroup>
+    <h2>a custom function for KM plots with ggplot2</h2>
+  </hgroup>
+  <article>
+    <pre><code class="r">t.survfit &lt;- survfit(lungca.Surv ~ ph.karno, data = lung)
+t.survframe &lt;- createSurvivalFrame(t.survfit)
+qplot_survival(t.survframe) + theme_bw()
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-70.png" alt="plot of chunk unnamed-chunk-70"> </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-73" style="background:;">
+  <hgroup>
+    <h2>summary</h2>
+  </hgroup>
+  <article>
+    <ul class = "build">
+<li>ggplot2 a viable alternative to base R graphics and the lattice package</li>
+<li>still some gaps</li>
+<li>very sensible defaults: graphs look nice without fiddling</li>
+<li>very customisable, graphs are just R objects</li>
+<li>built on a principled grammar of graphics</li>
+<li>excellent web site, links to the book, tutorials: <a href="http://ggplot2.org">http://ggplot2.org</a></li>
+<li>really excellent web documentation with lots of examples: <a href="http://docs.ggplot2.org/current/">http://docs.ggplot2.org/current/</a></li>
+<li>dedicated mailing list, but lots of support and examples on StackOverflow etc</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-74" style="background:;">
+  <hgroup>
+    <h2>enough!</h2>
+  </hgroup>
+  <article>
+    
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+
+  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+<!-- Grab CDN jQuery, fall back to local if offline -->
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+<script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery-1.7.min.js"><\/script>')</script>
+<!-- Load Javascripts for Widgets -->
+<!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script> -->
+<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
+<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+</html>
