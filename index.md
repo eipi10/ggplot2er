@@ -15,7 +15,7 @@ mode        : selfcontained # {selfcontained, standalone, draft}
 --- 
 
 ## source
-The majority of the material in this presentation is taken:
+The majority of the material in this presentation is borrowed from:
 - Hadley Wickham. _ggplot2: Elegant Graphics for Data Analysis_ Springer:2009 DOI 10.1007/978-0-387-98141-3
 - ![Hadley Wickham](assets/img/hadley_wickham.jpg)
 - ggplot2 documentation: http://docs.ggplot2.org/current/
