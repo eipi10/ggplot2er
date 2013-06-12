@@ -21,7 +21,7 @@ The majority of the material in this presentation is borrowed from:
 - ggplot2 documentation: http://docs.ggplot2.org/current/
 
 This presentation was created using ```slidify``` for R - see http://slidify.org
-- the Markdown source code for these slides, including the embedded R code, is avalaiable at https://github.com/timchurches/Ggplot2Talk
+- the Markdown source code for these slides, including the embedded R code, is available at https://github.com/timchurches/Ggplot2Talk
 
 
 
@@ -841,7 +841,7 @@ grid.arrange(p1, p2, ncol = 2)
 
 ## non-linear mixed model from MASS: lattice vs ggplot2
 
-* example of effects of antaogonised (or not) phenylbiguanide on the blood pressure of rabbits, from W.N Venables and B.D. Ripley (1999). Modern Applied Statistics with S-PLUS (MASS), 3rd Ed. Springer. Section 8.8, pp273-7, using a four parameter response function in log(dose):
+* example of effects of antagonised (or not) phenylbiguanide on the blood pressure of rabbits, from W.N Venables and B.D. Ripley (1999). Modern Applied Statistics with S-PLUS (MASS), 3rd Ed. Springer. Section 8.8, pp273-7, using a four parameter response function in log(dose):
 
 $${f(\alpha, \beta, \lambda, \theta, x)} = {\alpha + {\beta - \alpha \over 1 + exp[(x - \lambda)/\theta]}}$$
 
@@ -1058,14 +1058,17 @@ qplot_survival(t.survframe) + theme_bw()
 
 ## summary
 
->- ggplot2 a viable alternative to base R graphics and the lattice package
->- still some gaps
->- very sensible defaults: graphs look nice without fiddling
->- very customisable, graphs are just R objects
->- built on a principled grammar of graphics
->- excellent web site, links to the book, tutorials: http://ggplot2.org
->- really excellent web documentation with lots of examples: http://docs.ggplot2.org/current/
->- dedicated mailing list, but lots of support and examples on StackOverflow etc
+* ggplot2 a viable alternative to base R graphics and the lattice package
+* still some gaps
+* very sensible defaults: graphs look nice without fiddling
+* very customisable, graphs are just R objects
+* built on a principled grammar of graphics
+* excellent web site, links to the book, tutorials: http://ggplot2.org
+* really excellent web documentation with lots of examples: http://docs.ggplot2.org/current/
+* dedicated mailing list, but lots of support and examples on StackOverflow etc
+* very highly recommended: Winston Chang. R Graphics Cookbook. O'Reilly Media 2012.
+  * comprehensive problem- and task-oriented coverage of everything you ever wanted to know about ggplot2
+  * see http://shop.oreilly.com/product/0636920023135.do (also available via Amazon on Kindle)
 
 ---
 
